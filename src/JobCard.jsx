@@ -1,6 +1,7 @@
 import './JobCard.css';
 import { useContext } from 'react';
 import userContext from './userContext';
+import JoblyApi from './api';
 
 /** JobCard component for Jobly.
  *
@@ -14,11 +15,19 @@ import userContext from './userContext';
  */
 
 function JobCard({ job }) {
-    const { hasAppliedToJob, applyToJob } = useContext(userContext);
+    const { currentUser, setCurrentUser } = useContext(userContext);
 
-    /** handles apply button click */
-    async function handleApply(evt) {
-        await applyToJob(job.id);
+
+
+    /** applies to job for currentUser */
+    async function applyToJob() {
+        const { username } = currentUser;
+
+        const appliedJobId = await JoblyApi.applyToJob(job.id, username);
+        currentUser.applications.add(appliedJobId);
+        setCurrentUser(currentUser => ({
+            ...currentUser
+        }));
     }
 
     return (
@@ -30,7 +39,7 @@ function JobCard({ job }) {
                 <p>{job.companyName}</p>
                 <p>Salary: ${job.salary}</p>
                 <p>Equity: {job.equity}</p>
-                {hasAppliedToJob(job.id)
+                {currentUser.applications.has(job.id)
                     ? <button
                         disabled
                         className='JobCard-apply
@@ -40,7 +49,7 @@ function JobCard({ job }) {
                         className='JobCard-apply
                         btn btn-danger
                         text-uppercase float-end'
-                        onClick={handleApply}>Apply</button>}
+                        onClick={applyToJob}>Apply</button>}
             </div>
         </div >
     );

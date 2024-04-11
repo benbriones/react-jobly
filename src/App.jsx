@@ -25,7 +25,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [isLoaded, setIsLoaded] = useState(false);
-  const [applicationIds, setApplicationIds] = useState([]);
+  // const [applicationIds, setApplicationIds] = useState([]);
 
   useEffect(function fetchUserOnLoadAndTokenChange() {
     async function fetchUser() {
@@ -35,8 +35,10 @@ function App() {
         const decodedPayload = jwtDecode(token);
         const username = decodedPayload.username;
         const user = await JoblyApi.getUser(username);
-        setCurrentUser(user);
-        setApplicationIds(user.applications);
+        setCurrentUser({
+          ...user,
+          applications: new Set(user.applications)
+        });
       }
       else {
         localStorage.removeItem('token');
@@ -62,7 +64,10 @@ function App() {
   /** updates a user profile */
   async function updateUser(formData) {
     const updatedUser = await JoblyApi.updateUser(formData);
-    setCurrentUser(updatedUser);
+    setCurrentUser(currentUser => ({
+      ...updatedUser,
+      applications: currentUser.applications
+    }));
   }
 
   /** logs a user out */
@@ -70,24 +75,14 @@ function App() {
     setToken(null);
   }
 
-  /** applies to job for currentUser */
-  async function applyToJob(jobId) {
-    const { username } = currentUser;
-    const appliedJobId = await JoblyApi.applyToJob(jobId, username);
-    setApplicationIds([...applicationIds, appliedJobId]);
-  }
 
-  /** checks if applicationIds */
-  function hasAppliedToJob(jobId) {
-    return applicationIds.includes(jobId);
-  }
 
   if (!isLoaded) return <LoadingSpinner />;
 
   return (
     <div className="App">
       <BrowserRouter>
-        <userContext.Provider value={{ currentUser, applyToJob, hasAppliedToJob }}>
+        <userContext.Provider value={{ currentUser, setCurrentUser}}>
           <NavBar logout={logout} />
           <RoutesList
             login={login}
