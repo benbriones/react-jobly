@@ -4,6 +4,8 @@ import JoblyApi from './api';
 import SearchForm from './SearchForm';
 import JobCardList from "./JobCardList";
 import LoadingSpinner from './LoadingSpinner';
+import PageNav from "./PageNav"
+
 
 /** JobsList component for Jobly.
  *
@@ -22,6 +24,10 @@ function JobsList() {
         searched: "",
     });
 
+    const jobsPerPage = 10;
+    const [currentPage, setCurrentPage] = useState(1);
+
+
     useEffect(function fetchJobsWhenMounted() {
         search(jobs.searched);
     }, []);
@@ -39,7 +45,18 @@ function JobsList() {
         });
     }
 
+    /** goes to page clicked on */
+    function handlePageNav(page) {
+        setCurrentPage(page);
+    }
+
+
+
     if (!jobs.data) return <LoadingSpinner />;
+
+    const lastIdx = currentPage * jobsPerPage;
+    const firstIdx = lastIdx - jobsPerPage;
+    const currJobs = jobs.data.slice(firstIdx, lastIdx);
 
     return (
         <div className='JobsList col-md-8 offset-md-2'>
@@ -47,7 +64,12 @@ function JobsList() {
             {jobs.searched
                 ? <h1>{`Search Results for '${jobs.searched}'`}</h1>
                 : <h1>All Jobs</h1>}
-            <JobCardList jobs={jobs.data} />
+            <JobCardList jobs={currJobs} />
+            <PageNav
+                totalItems={jobs.data.length}
+                handlePageNav={handlePageNav}
+                currPage={currentPage}
+                itemsPerPage={jobsPerPage} />
         </div>
     );
 }
