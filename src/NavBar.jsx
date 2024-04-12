@@ -61,7 +61,7 @@ function NavBar({ logout }) {
           className="navbar-brand ms-2"
           to="/">
             Jobly
-            <img id="joblyLogoNav" src="public/newJoblyLogo.png" alt="logoNav" />
+            <img id="joblyLogoNav" src="/newJoblyLogo.png" alt="logoNav" />
             </Link>
         {currentUser
           ? generateLoggedInNavBar()
