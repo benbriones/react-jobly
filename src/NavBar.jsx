@@ -59,7 +59,10 @@ function NavBar({ logout }) {
       <div className="container-fluid">
         <Link
           className="navbar-brand ms-2"
-          to="/">Jobly</Link>
+          to="/">
+            Jobly
+            <img id="joblyLogoNav" src="public/newJoblyLogo.png" alt="logoNav" />
+            </Link>
         {currentUser
           ? generateLoggedInNavBar()
           : generateAnonNavBar()}

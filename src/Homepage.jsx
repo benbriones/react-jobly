@@ -17,7 +17,9 @@ function Homepage() {
 
     return (
         <div className='Homepage'>
-            <h1 className='Homepage-title'>Jobly</h1>
+            <h1 className='Homepage-title'>Jobly
+                <img id="joblyLogoHomepage" src="public/newJoblyLogo.png" alt="" />
+            </h1>
             <p className='Homepage-welcome'>
                 All the jobs in one, convenient place
             </p>

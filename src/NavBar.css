@@ -16,6 +16,11 @@
   color: black;
 }
 
+#joblyLogoNav {
+  width: 40px;
+  height: auto;
+}
+
 .navbar-brand {
   color: rgb(255, 255, 255) !important;
 }
